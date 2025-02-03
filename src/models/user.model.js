@@ -52,9 +52,10 @@ const userSchema = Schema(
 // async because encryption process is time consuming
 // hook runs when "save" event occurs
 userSchema.pre("save", async function (next) {
+    // Skip hashing if the password field hasn't been modified
     if (!this.isModified("password")) return next();
 
-    this.password = bcrypt.hash(this.password, 10);
+    this.password = await bcrypt.hash(this.password, 10);
     next();
 });
 
